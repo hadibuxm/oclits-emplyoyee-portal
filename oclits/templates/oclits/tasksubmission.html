@@ -1,0 +1,113 @@
+{% extends 'oclits/base.html'%}
+{% load static %}
+
+{% block content %}
+    
+    <form action="" name="interneesform" method="POST">
+        {% csrf_token %}
+        <input style="display: none;" name="userid" type="text" value="{{userid}}">
+        <div class="container">
+            <h2>user: {{userid}}</h2>
+            <div class="row">
+                <div class="col-sm">
+                    <!--                    <label for="intime"><strong>In Time:</strong></label>
+                    <input type="time" id="intime" name="intime">-->
+                    <label for="timeticketdate">Date</label>
+                   <input type="date" name="timeticketdate" id="timeticketdate"><br>
+                    <label for="intime">Intime</label>
+                    <input type="time" id="intime" name="intime"><br>
+                    <label for="outime">Outime</label>
+                    <input type="time" id="outtime" name="outtime">
+                   <input style="display: none;" id="hours" type="number">
+                    <h5 id="totalhours"></h5>
+                    <h5 id="remainingtime"></h5>
+                </div>
+                <div class="col-sm">
+                    <!--
+                    <label for="outtime"><strong>Out Time:</strong></label>
+                    <input type="time" id="outime" name="outtime">
+                    -->
+                </div>
+            </div>
+           
+        <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Tasks</th>
+                    <th scope="col">Select</th>
+                    <th scope="col">Hours Worked</th> 
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, values in task_list.items %}
+                <tr class="bg-info">
+                    <th scope="row">{{key}}</th>
+                    <td>
+                        <label for="{{values}}">{{values}}</label>
+                    </td>
+                    <td><input type="checkbox" id="{{values}}" name="{{key}}" value="{{values}}"></td>
+                    <td>
+                        <select onchange="remaning_time(this)" id="{{key}}workinghours" name="{{key}}workinghours">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        <button class="btn btn-success" name="submitdata" type="submit">Submit Data</button>
+        <button class="btn btn-outline-success" name="showbarchart" type="submit">
+            Show bar chart of tasks done
+        </button><br><br>
+    </div>
+    </form>
+    <script>
+       
+        document.getElementById("outtime").onchange = function () { timedifference() };
+        document.getElementById("intime").onchange = function () { timedifference() };
+       
+        function remaning_time(selectobject){
+            hours = parseInt(document.getElementById("hours").value);
+            selected_time = parseInt(selectobject.value);
+            //document.getElementById("hours").innerHTML = toString(hours-selected_time);
+            //console.log(typeof(hours));
+            //console.log(typeof(selected_time));
+            if(selected_time <= hours){
+                time_remaining = (hours - selected_time);
+                document.getElementById("remainingtime").innerHTML = "Remaining Hours: " + time_remaining;
+                document.getElementById("hours").value = time_remaining;
+                console.log(hours-selected_time)
+            }
+           else{
+               alert("Select No. of Hours less than or equal to remaining hours");
+           }
+            //console.log(time_remaining);
+            
+            
+        }
+
+        function timedifference() {
+                time1 = document.getElementById("intime").value;
+                time2 = document.getElementById("outtime").value;
+                //function show_time(time1, time2) {
+                var startTime = moment(time1, 'HH:mm')
+                var endTime = moment(time2, 'HH:mm');
+                //var endTime = moment('04:00:00 pm', 'HH:mm:ss a');
+                hours = endTime.diff(startTime, 'hours');
+                var mins = moment.utc(moment(endTime, "HH:mm:ss").diff(moment(startTime, "HH:mm:ss"))).format("mm");
+                document.getElementById("totalhours").innerHTML = "Working Hours "+hours+" Hours "+mins+"  minutes";
+                document.getElementById("hours").value = hours;
+                //document.getElementById("minutes").innerHTML = mins;
+            }
+        //    }
+    </script>
+    
+    {% endblock content %}

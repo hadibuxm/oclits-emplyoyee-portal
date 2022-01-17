@@ -1,0 +1,26 @@
+{% extends 'oclits/base.html'%}
+{% load static%}
+{% block content %}
+<div class="container">
+    <h1>{{num_visits}}</h1>
+    <form action="" name="loginpage" method="POST" >
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">@</span>
+            </div>
+            <input type="text" name="user" class="form-control" placeholder="Username" aria-label="Username"
+                aria-describedby="basic-addon1" required>
+            <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Username"
+                aria-describedby="basic-addon1" required>
+        </div>
+        <div class="col text-center">
+            <button type="submit" class="btn btn-success">LOGIN</button>
+        </div>
+       
+    </form>
+</div>
+<script>
+
+</script>
+{% endblock content %}
