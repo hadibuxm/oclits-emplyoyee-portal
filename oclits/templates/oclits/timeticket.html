@@ -1,0 +1,251 @@
+{% extends 'oclits/base.html'%}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <form action="" method="post">
+    <div class="row">
+            {% csrf_token %}
+            <div class="col-sm">
+                
+                <label for="timeticketdate">Date</label>
+                <select onchange="test(this)" name="month" id="month">
+                    <option value="Jan">jan</option>
+                    <option value="Feb">feb</option>
+                    <option value="March">march</option>
+                    <option value="April">april</option>
+                    <option value="May">may</option>
+                    <option value="Jun">jun</option>
+                    <option value="July">july</option>
+                    <option value="August">august</option>
+                    <option value="Sep">september</option>
+                    <option value="Oct">october</option>
+                    <option value="Nov">november</option>
+                    <option value="Dec">december</option>
+                </select>
+                <input onchange="test(this)" id="year" min="2000" max="2022" type="number">
+                <table id="calender_table" style="width: 50%; height: 80%;" class="table table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th id="month_year_header"></th>
+                        </tr>
+                    </thead>
+                <tbody>
+                        <tr class="bg-info">
+                            <td onclick="show_details(this.id)" id="0"></td>
+                            <td onclick="show_details(this.id)" id="1"></td>
+                            <td onclick="show_details(this.id)" id="2"></td>
+                            <td onclick="show_details(this.id)" id="3"></td>
+                            <td onclick="show_details(this.id)" id="4"></td>
+                            <td onclick="show_details(this.id)" id="5"></td>
+                            <td onclick="show_details(this.id)" id="6"></td>
+                        </tr>
+                        <tr class="bg-info">
+                            <td onclick="show_details(this.id)" id="7"></td>
+                            <td onclick="show_details(this.id)" id="8"></td>
+                            <td onclick="show_details(this.id)" id="9"></td>
+                            <td onclick="show_details(this.id)" id="10"></td>
+                            <td onclick="show_details(this.id)" id="11"></td>
+                            <td onclick="show_details(this.id)" id="12"></td>
+                            <td onclick="show_details(this.id)" id="13"></td>
+                        </tr>
+                        <tr class="bg-info">
+                            <td onclick="show_details(this.id)" id="14"></td>
+                            <td onclick="show_details(this.id)" id="15"></td>
+                            <td onclick="show_details(this.id)" id="16"></td>
+                            <td onclick="show_details(this.id)" id="17"></td>
+                            <td onclick="show_details(this.id)" id="18"></td>
+                            <td onclick="show_details(this.id)" id="19"></td>
+                            <td onclick="show_details(this.id)" id="20"></td>
+                        </tr>
+                        <tr class="bg-info">
+                            <td onclick="show_details(this.id)" id="21"></td>
+                            <td onclick="show_details(this.id)" id="22"></td>
+                            <td onclick="show_details(this.id)" id="23"></td>
+                            <td onclick="show_details(this.id)" id="24"></td>
+                            <td onclick="show_details(this.id)" id="25"></td>
+                            <td onclick="show_details(this.id)" id="26"></td>
+                            <td onclick="show_details(this.id)" id="27"></td>
+                        </tr>
+                        <tr class="bg-info">
+                            <td onclick="show_details(this.id)" id="28"></td>
+                            <td onclick="show_details(this.id)" id="29"></td>
+                            <td id="30"></td>
+                            <td id="31"></td>
+                            
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm">
+                <br><br><br><br>
+                <h5 id="selecteddate"></h5>
+                <label id="project_label" for="projects">Select Project</label>
+                <select name="projects" id="projects">
+                  
+                </select>
+                <label id="activity_label" for="activity">Activity</label>
+                <input id="activity" name="activity" type="text">
+                <label id = "progress_label" for="progress">Progress</label>
+                <input id="progress"  name="progress" type="text">
+                <label id="label_for_duration" for="duration">Duration</label>
+                <input onchange="remaining_time(this.value)" id="duration" name="duration" type="text">
+                <input type="text" name="date" id= "date" >
+                <input type="text" name="timein" id="timein">
+                <input type="text" name="timeout" id="timeout">
+                <label id="label_for_developer_comments" for="developer_comments">Comments</label>
+                <input id="developer_comments" name="developer_comments" type="text">
+                <label id="remaining_duration" for="remaining_duration"></label><br><br>
+                <input id="remainingtime" type="text">
+                <button id="submittimeticket" name="submittimeticket" type="submit" class="btn btn-success">Submit Time Ticket</button>
+            </div> 
+    </div>
+    </form>
+</div>
+
+<script>
+document.getElementById("calender_table").style.display = "none";
+document.getElementById("remainingtime").style.display = "none";
+document.getElementById("projects").style.display = "none";
+document.getElementById("activity").style.display = "none";
+document.getElementById("progress").style.display = "none";
+document.getElementById("activity_label").style.display = "none";
+document.getElementById("progress_label").style.display = "none";
+document.getElementById("project_label").style.display = "none";
+document.getElementById("duration").style.display = "none";
+document.getElementById("label_for_duration").style.display = "none";
+document.getElementById("date").style.display = "none";
+document.getElementById("timein").style.display = "none";
+document.getElementById("timeout").style.display = "none";
+document.getElementById("developer_comments").style.display = "none";
+document.getElementById("label_for_developer_comments").style.display = "none";
+document.getElementById("submittimeticket").style.display = "none";
+document.getElementById("selecteddate").style.display = "none";
+function remaining_time(value){
+    submitted_time = value.split(":");
+    remaining_time = document.getElementById("remainingtime").value.split(":");
+    r_hours = parseInt(remaining_time[0]);
+    r_mins = parseInt(remaining_time[1]);
+    s_hours = parseInt(submitted_time[0]);
+    s_mins = parseInt(submitted_time[1]);
+    if(s_hours > r_hours){
+        alert("Please enter hours less than remaining duration");
+        document.getElementById("duration").value = " ";
+    }
+    if(s_mins > r_mins){
+        alert("Please enter minutes less than or equal to remaining duration minutes");
+        document.getElementById("duration").value = " ";
+    }
+}
+
+function timedifference() {
+    time1 = document.getElementById("timein").value;
+    time1op = document.getElementById("timein").value;
+    time1op = parseInt(time1op);
+    if(time1op>=12){
+        time1 = time1+"PM";
+    }
+    else{
+        time1 = time1+"AM"
+    }
+    time2 = document.getElementById("timeout").value+'PM';
+    //function show_time(time1, time2) {
+    var startTime = moment(time1, 'HH:mm A');
+    var endTime = moment(time2, 'HH:mm A');
+    //var endTime = moment('04:00:00 pm', 'HH:mm:ss a');
+    hours = endTime.diff(startTime, 'hours');
+    var mins = moment.utc(moment(endTime, "HH:mm:ss").diff(moment(startTime, "HH:mm:ss"))).format("mm");
+    document.getElementById("remaining_duration").innerHTML = "Working Hours " + hours + " Hours " + mins + "  minutes";
+    document.getElementById("remainingtime").value = hours+":"+mins;
+    //document.getElementById("hours").value = hours;
+    //document.getElementById("minutes").innerHTML = mins;
+}
+
+function display_timeticket_elements() {
+    document.getElementById("projects").style.display = "block";
+    document.getElementById("activity").style.display = "block";
+    document.getElementById("progress").style.display = "block";
+    document.getElementById("activity_label").style.display = "block";
+    document.getElementById("progress_label").style.display = "block";
+    document.getElementById("project_label").style.display = "block";
+    document.getElementById("duration").style.display = "block";
+    document.getElementById("label_for_duration").style.display = "block";
+    document.getElementById("developer_comments").style.display = "block";
+    document.getElementById("label_for_developer_comments").style.display = "block";
+    document.getElementById("submittimeticket").style.display = "block";
+    document.getElementById("selecteddate").style.display = "block";
+    
+}
+function  show_details(selectobject) {
+    display_timeticket_elements();
+    let d = document.getElementById(selectobject).innerHTML;
+    const datetimeinout = d.split("  ");
+    document.getElementById("date").value = datetimeinout[0];
+    document.getElementById("timein").value = datetimeinout[1];
+    document.getElementById("timeout").value = datetimeinout[2];
+    document.getElementById("selecteddate").innerHTML = document.getElementById("date").value;
+    timedifference();
+    console.log(datetimeinout);
+}
+
+function  clear_options() {
+    select = document.getElementById("projects");
+    select_length = select.options.length;
+    for (let i = select_length - 1; i >= 0; i--) {
+        select.remove(i);}
+        //alert(i);
+}
+
+function  clear_table() {
+    for(let i = 0; i<=31;i++){
+        document.getElementById(i.toString()).innerHTML = " ";
+    }
+}
+function  test(selectobject) {
+    clear_options();
+    clear_table();
+    var time_ticket = {{data | safe}};
+    var month_tasks = {{task_data | safe}};
+    month = document.getElementById("month").value;
+    year = document.getElementById("year").value;
+    document.getElementById("calender_table").style.display = "block";
+    document.getElementById("month_year_header").innerHTML = month+"  " + year.toString();
+    let day = 0;
+    if (year >= 2000){ // if user has selected year
+        //clear_calender();
+        time_ticket.forEach(date =>{
+            //alert(date);
+            if(date[0].includes(month) && date[0].includes(year.toString())){ // check for selected month data
+                //for(let i = day; i<=31; i+=1){
+                document.getElementById(day.toString()).innerHTML = date[0]+"  "+date[1]+"  "+ date[2];
+                day+=1;
+                //counter_for_date+=1;
+                //}
+            }
+        })
+        task_counter = 1;
+        task_array = new Array();
+        month_tasks.forEach(task=>{
+            if(task[0].includes(month) && task[0].includes(year.toString())){
+                task_array.push(task[2])
+        }})
+        task_array = task_array.filter(function (item, index, inputArray) {
+            return inputArray.indexOf(item) == index;
+        });
+        console.log(task_array);
+        task_array.forEach(task=>{
+                var select = document.getElementById("projects");
+                var opt = document.createElement('option');
+                opt.value = task;
+                opt.innerHTML = task;
+                select.add(opt);
+        })
+    }
+    else{
+        alert('Please Select Correct Year');
+    }
+}
+
+</script>
+{% endblock content %}
